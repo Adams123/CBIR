@@ -8,15 +8,26 @@ package t1;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import org.postgresql.largeobject.LargeObjectManager;
 
 /**
  *
@@ -24,9 +35,10 @@ import javax.swing.JFrame;
  */
 public class gui extends javax.swing.JFrame
 {
-    
+
     private final ConexaoSQL sql = new ConexaoSQL();
-    
+    public Connection con;
+
     /**
      * Creates new form gui
      */
@@ -36,8 +48,9 @@ public class gui extends javax.swing.JFrame
         this.setSize(665, 210);
         jSeparator1.setVisible(false);
         jScrollPaneResultados.setVisible(false);
-        sql.connect("postgres", "123");
-        
+        jImagem.setVisible(false);
+        con = sql.connect("postgres", "123");
+
     }
 
     /**
@@ -47,7 +60,8 @@ public class gui extends javax.swing.JFrame
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         jBtBuscar = new javax.swing.JButton();
         jBtUpload = new javax.swing.JButton();
@@ -56,19 +70,24 @@ public class gui extends javax.swing.JFrame
         jScrollPane1 = new javax.swing.JScrollPane();
         jTxtCampoBusca = new javax.swing.JTextArea();
         jScrollPaneResultados = new javax.swing.JScrollPane();
+        jImagem = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jBtBuscar.setText("Buscar");
-        jBtBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jBtBuscar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jBtBuscarActionPerformed(evt);
             }
         });
 
         jBtUpload.setText("Upload ");
-        jBtUpload.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jBtUpload.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jBtUploadActionPerformed(evt);
             }
         });
@@ -77,7 +96,7 @@ public class gui extends javax.swing.JFrame
 
         jTxtCampoBusca.setColumns(20);
         jTxtCampoBusca.setRows(5);
-        jTxtCampoBusca.setText("Digite aqui sua busca");
+        jTxtCampoBusca.setText("SELECT * FROM mirflickr WHERE id < 10;");
         jScrollPane1.setViewportView(jTxtCampoBusca);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -97,8 +116,10 @@ public class gui extends javax.swing.JFrame
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(jBtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)))
                     .addComponent(jScrollPaneResultados))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jImagem)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -117,6 +138,10 @@ public class gui extends javax.swing.JFrame
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPaneResultados, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jImagem)
+                .addGap(55, 55, 55))
         );
 
         pack();
@@ -126,60 +151,119 @@ public class gui extends javax.swing.JFrame
     {//GEN-HEADEREND:event_jBtBuscarActionPerformed
         jSeparator1.setVisible(true);
         jScrollPaneResultados.setVisible(true);
-        this.setSize(665, 363);
-        
-        /*String command;
-        command = "SELECT id FROM mirflickr WHERE id < 10;";
-        
-        ResultSet rs = sql.querySQL(command);
-        try {
-            //DEBUG
-            while (rs.next()){
-                System.out.println(rs.getString(1)); 
+        jImagem.setVisible(true);
+        //this.setSize(665, 363);
+        this.pack();
+        int i = 0;
+        int colunas;
+        String command;
+        command = jTxtCampoBusca.getText();
+        Statement stmt = null;
+        ResultSet rs;
+        Vector data = new Vector();
+        Vector columnNames = new Vector();
+        Vector images = new Vector();
+        byte[] imgData = null;
+        try
+        {
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);//necessário para reposicionar a leitura apos a contagem de resultados
+            rs = stmt.executeQuery(command);
+            ResultSetMetaData metadados = rs.getMetaData();
+            colunas = metadados.getColumnCount();
+            while (rs.next())
+            { //verifica se algum resultado retornou nulo
+                i++;
+            }
+            if (i == 0)
+            {
+                System.err.println("[ERRO]\tNenhum resultado encontrado.");
+                rs.close();
+            }
+            for (i = 1; i <= colunas; i++)
+            {
+                columnNames.addElement(metadados.getColumnName(i)); //adiciona os nomes das colunas ao vetor de nomes
+            }
+            rs.first(); //reposiciona leitura
+            while (rs.next())
+            {
+                Vector row = new Vector(colunas);
+                for (i = 1; i <= colunas; i++)
+                {
+                    row.addElement(rs.getObject(i));
+                }
+                data.addElement(row);
+                
+                imgData = rs.getBytes("complex_data");
+                Image img = Toolkit.getDefaultToolkit().createImage(imgData);
+                ImageIcon icon = new ImageIcon(img);
+                images.add(icon);
             }
             rs.close();
-        } catch (SQLException ex) {
+        } catch (SQLException ex)
+        {
             Logger.getLogger(gui.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
+        showResult(data, columnNames, images);
     }//GEN-LAST:event_jBtBuscarActionPerformed
-    
-    private Image getScaledImage(Image srcImg, int w, int h){
+
+    private void showResult(Vector data, Vector columnNames, Vector images)
+    {
+        DefaultTableModel d = new DefaultTableModel(data, columnNames);
+        JTable table = new JTable(d);
+        jScrollPaneResultados.setViewportView(table);
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+        {
+            @Override
+            public void valueChanged(ListSelectionEvent e)
+            {
+                int row = table.getSelectedRow();
+                int id = Integer.parseInt(table.getModel().getValueAt(row, 0).toString());
+                jImagem.setIcon((Icon) images.elementAt(row));
+            }
+        });
+    }
+
+    private Image getScaledImage(Image srcImg, int w, int h)
+    {
         BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2 = resizedImg.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.drawImage(srcImg, 0, 0, w, h, null);
         g2.dispose();
-        
+
         return resizedImg;
     }
-    
+
     private void jBtUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtUploadActionPerformed
-        JFileChooser fileChooser = new JFileChooser();        
+        JFileChooser fileChooser = new JFileChooser();
         int returnVal = fileChooser.showOpenDialog(this);
-        
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();            
-            
-            try {
+
+        if (returnVal == JFileChooser.APPROVE_OPTION)
+        {
+            File file = fileChooser.getSelectedFile();
+
+            try
+            {
                 String path = null;
                 path = file.getPath(); // Obtém o path da imagem
-                
+
                 ImageIcon icon = new ImageIcon(path);
-                
+
                 //Redimensiona a imagem
                 ImageIcon thumbnailIcon = new ImageIcon(getScaledImage(icon.getImage(), 120, 120));
                 jLabelImgConsulta.setIcon(thumbnailIcon);
-                
+
                 String commandImportImg = "SELECT image_import('" + path + "');";
 
                 jTxtCampoBusca.setText(commandImportImg);
-            } catch (Exception ex) {
-              System.err.println("[ERRO]\tProblema ao acessar o arquivo " + file.getAbsolutePath());
+            } catch (Exception ex)
+            {
+                System.err.println("[ERRO]\tProblema ao acessar o arquivo " + file.getAbsolutePath());
             }
-        } 
-        else {
+        } else
+        {
             System.err.println("[DEBUG]\tAcesso ao arquivo cancelado pelo usuário.");
-        }     
+        }
     }//GEN-LAST:event_jBtUploadActionPerformed
 
     /**
@@ -232,6 +316,7 @@ public class gui extends javax.swing.JFrame
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBtBuscar;
     private javax.swing.JButton jBtUpload;
+    private javax.swing.JLabel jImagem;
     private javax.swing.JLabel jLabelImgConsulta;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPaneResultados;
