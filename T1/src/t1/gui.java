@@ -5,19 +5,39 @@
  */
 package t1;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+
 /**
  *
  * @author adams
  */
 public class gui extends javax.swing.JFrame
 {
-
+    
+    private final ConexaoSQL sql = new ConexaoSQL();
+    
     /**
      * Creates new form gui
      */
     public gui()
     {
         initComponents();
+        this.setSize(665, 210);
+        jSeparator1.setVisible(false);
+        jScrollPaneResultados.setVisible(false);
+        sql.connect("postgres", "123");
+        
     }
 
     /**
@@ -27,52 +47,140 @@ public class gui extends javax.swing.JFrame
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
-        botaoBuscar = new javax.swing.JButton();
-        campoBusca = new javax.swing.JTextField();
+        jBtBuscar = new javax.swing.JButton();
+        jBtUpload = new javax.swing.JButton();
+        jLabelImgConsulta = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTxtCampoBusca = new javax.swing.JTextArea();
+        jScrollPaneResultados = new javax.swing.JScrollPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        botaoBuscar.setText("Buscar");
-        botaoBuscar.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                botaoBuscarActionPerformed(evt);
+        jBtBuscar.setText("Buscar");
+        jBtBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtBuscarActionPerformed(evt);
             }
         });
 
-        campoBusca.setText("Digite aqui sua busca");
+        jBtUpload.setText("Upload ");
+        jBtUpload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtUploadActionPerformed(evt);
+            }
+        });
+
+        jLabelImgConsulta.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jTxtCampoBusca.setColumns(20);
+        jTxtCampoBusca.setRows(5);
+        jTxtCampoBusca.setText("Digite aqui sua busca");
+        jScrollPane1.setViewportView(jTxtCampoBusca);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(171, Short.MAX_VALUE)
-                .addComponent(botaoBuscar)
-                .addGap(166, 166, 166))
-            .addComponent(campoBusca)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jBtUpload, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabelImgConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jBtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)))
+                    .addComponent(jScrollPaneResultados))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(campoBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelImgConsulta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(botaoBuscar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jBtUpload)
+                    .addComponent(jBtBuscar))
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPaneResultados, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void botaoBuscarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoBuscarActionPerformed
-    {//GEN-HEADEREND:event_botaoBuscarActionPerformed
-        T1.connect("postgres", "123");
-    }//GEN-LAST:event_botaoBuscarActionPerformed
+    private void jBtBuscarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jBtBuscarActionPerformed
+    {//GEN-HEADEREND:event_jBtBuscarActionPerformed
+        jSeparator1.setVisible(true);
+        jScrollPaneResultados.setVisible(true);
+        this.setSize(665, 363);
+        
+        /*String command;
+        command = "SELECT id FROM mirflickr WHERE id < 10;";
+        
+        ResultSet rs = sql.querySQL(command);
+        try {
+            //DEBUG
+            while (rs.next()){
+                System.out.println(rs.getString(1)); 
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(gui.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+    }//GEN-LAST:event_jBtBuscarActionPerformed
+    
+    private Image getScaledImage(Image srcImg, int w, int h){
+        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = resizedImg.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.drawImage(srcImg, 0, 0, w, h, null);
+        g2.dispose();
+        
+        return resizedImg;
+    }
+    
+    private void jBtUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtUploadActionPerformed
+        JFileChooser fileChooser = new JFileChooser();        
+        int returnVal = fileChooser.showOpenDialog(this);
+        
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();            
+            
+            try {
+                String path = null;
+                path = file.getPath(); // Obtém o path da imagem
+                
+                ImageIcon icon = new ImageIcon(path);
+                
+                //Redimensiona a imagem
+                ImageIcon thumbnailIcon = new ImageIcon(getScaledImage(icon.getImage(), 120, 120));
+                jLabelImgConsulta.setIcon(thumbnailIcon);
+                
+                String commandImportImg = "SELECT image_import('" + path + "');";
+
+                jTxtCampoBusca.setText(commandImportImg);
+            } catch (Exception ex) {
+              System.err.println("[ERRO]\tProblema ao acessar o arquivo " + file.getAbsolutePath());
+            }
+        } 
+        else {
+            System.err.println("[DEBUG]\tAcesso ao arquivo cancelado pelo usuário.");
+        }     
+    }//GEN-LAST:event_jBtUploadActionPerformed
 
     /**
      * @param args the command line arguments
@@ -114,13 +222,20 @@ public class gui extends javax.swing.JFrame
         {
             public void run()
             {
-                new gui().setVisible(true);
+                gui frame = new gui();
+                frame.setVisible(true);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton botaoBuscar;
-    private javax.swing.JTextField campoBusca;
+    private javax.swing.JButton jBtBuscar;
+    private javax.swing.JButton jBtUpload;
+    private javax.swing.JLabel jLabelImgConsulta;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPaneResultados;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTextArea jTxtCampoBusca;
     // End of variables declaration//GEN-END:variables
 }
