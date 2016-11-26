@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,7 +50,12 @@ public class gui extends javax.swing.JFrame
         jSeparator1.setVisible(false);
         jScrollPaneResultados.setVisible(false);
         jImagem.setVisible(false);
+        jTxtCampoBusca.setLineWrap(true);
+        jTxtCampoBusca.setWrapStyleWord(true);
         con = sql.connect("postgres", "123");
+       
+        
+        //generateTestsStr();//Debug
 
     }
 
@@ -60,8 +66,7 @@ public class gui extends javax.swing.JFrame
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
         jBtBuscar = new javax.swing.JButton();
         jBtUpload = new javax.swing.JButton();
@@ -74,21 +79,18 @@ public class gui extends javax.swing.JFrame
         jStatus = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(665, 347));
 
         jBtBuscar.setText("Buscar");
-        jBtBuscar.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jBtBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBtBuscarActionPerformed(evt);
             }
         });
 
         jBtUpload.setText("Upload ");
-        jBtUpload.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jBtUpload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBtUploadActionPerformed(evt);
             }
         });
@@ -100,6 +102,8 @@ public class gui extends javax.swing.JFrame
         jTxtCampoBusca.setText("SELECT * FROM mirflickr WHERE id < 10;");
         jScrollPane1.setViewportView(jTxtCampoBusca);
 
+        jImagem.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
         jStatus.setText("Status: conectado");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -110,48 +114,45 @@ public class gui extends javax.swing.JFrame
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSeparator1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jBtUpload, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabelImgConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(jBtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(jScrollPaneResultados))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jImagem))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jStatus)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jBtUpload, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabelImgConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jBtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jScrollPaneResultados)
+                    .addComponent(jSeparator1))
+                .addGap(18, 18, 18)
+                .addComponent(jImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabelImgConsulta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jBtUpload)
-                    .addComponent(jBtBuscar))
-                .addGap(1, 1, 1)
-                .addComponent(jStatus)
-                .addGap(2, 2, 2)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPaneResultados, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jImagem)
-                .addGap(55, 55, 55))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jImagem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelImgConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jBtUpload)
+                            .addComponent(jBtBuscar))
+                        .addGap(9, 9, 9)
+                        .addComponent(jStatus)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPaneResultados, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)))
+                .addGap(20, 20, 20))
         );
 
         pack();
@@ -162,8 +163,10 @@ public class gui extends javax.swing.JFrame
         jSeparator1.setVisible(true);
         jScrollPaneResultados.setVisible(true);
         jImagem.setVisible(true);
-        //this.setSize(665, 363);
-        this.pack();
+        jImagem.setSize(320, 320);
+        jImagem.repaint();
+        this.setSize(950, 340);
+        //this.pack();
         int i = 0;
         int colunas;
         String command;
@@ -180,6 +183,7 @@ public class gui extends javax.swing.JFrame
             rs = stmt.executeQuery(command);
             ResultSetMetaData metadados = rs.getMetaData();
             colunas = metadados.getColumnCount();
+            
             while (rs.next())
             { //verifica se algum resultado retornou nulo
                 i++;
@@ -193,7 +197,7 @@ public class gui extends javax.swing.JFrame
             {
                 columnNames.addElement(metadados.getColumnName(i)); //adiciona os nomes das colunas ao vetor de nomes
             }
-            rs.first(); //reposiciona leitura
+            rs.beforeFirst(); //reposiciona leitura
             while (rs.next())
             {
                 Vector row = new Vector(colunas);
@@ -213,6 +217,65 @@ public class gui extends javax.swing.JFrame
         showResult(data, columnNames, images);
     }//GEN-LAST:event_jBtBuscarActionPerformed
 
+    private void generateTestsStr(){
+        String command = null;
+        
+        //CS_EU
+        ArrayList <String> desc = new ArrayList<>();
+        desc.add("CS_EU");
+        desc.add("CS_CB");
+        
+        desc.add("CL_EU");
+        desc.add("CL_CB");
+        
+        desc.add("SC_EU");
+        desc.add("SC_CB");
+        
+        desc.add("CT_EU");
+        desc.add("CT_CB");
+        
+        desc.add("ZK_EU");
+        desc.add("ZK_CB");
+        
+        //kNN
+        String idVal = "1";
+        for(String d : desc){
+            command = "SELECT id, dist('mirflickr', 'complex_data', '" + d + "', complex_data_id, "+
+            "(" +
+               "SELECT fem_extraction('mirflickr', 'complex_data', '" + d + "'," + 
+               "(" + 
+                   "SELECT complex_data " +
+                   "FROM mirflickr " +
+                       "WHERE id = " + idVal + 
+               "))" +
+           ")) AS distancia " + 
+           "FROM mirflickr " +
+           "ORDER BY distancia " +
+           "LIMIT 10;";
+            System.out.println(command);
+        }  
+               
+        //Range
+        idVal = "1";
+        for(String d : desc){
+            command = "SELECT id, distancia " + 
+            "FROM ( " + 
+                "SELECT id, dist('mirflickr', 'complex_data', '" + d + "', complex_data_id, " +
+                "(" + 
+                    "SELECT fem_extraction('mirflickr', 'complex_data', '" + d + "'," +
+                    "(" +
+                            "SELECT complex_data " + 
+                            "FROM mirflickr " +
+                                    "WHERE id = " + idVal +
+                    "))" +
+                ")) AS distancia " +
+            "FROM mirflickr" +
+            ") AS Range " +
+            "WHERE distancia <= 1;";
+            System.out.println(command);
+        }  
+    }
+    
     private Image getImageFromID(int id) throws SQLException
     {
         Statement stmt;
@@ -243,7 +306,10 @@ public class gui extends javax.swing.JFrame
             {
                 int row = table.getSelectedRow();
                 int id = Integer.parseInt(table.getModel().getValueAt(row, 0).toString());
-                jImagem.setIcon((Icon) images.elementAt(row));
+                ImageIcon icon = (ImageIcon) images.elementAt(row);
+                ImageIcon thumbnailIcon = new ImageIcon(getScaledImage(icon.getImage(), 320, 320));
+                //jImagem.setIcon((Icon) images.elementAt(row));
+                jImagem.setIcon(thumbnailIcon);
             }
         });
     }
