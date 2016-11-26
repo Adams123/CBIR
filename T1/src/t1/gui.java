@@ -12,6 +12,7 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -27,7 +28,6 @@ import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import org.postgresql.largeobject.LargeObjectManager;
 
 /**
  *
@@ -49,6 +49,7 @@ public class gui extends javax.swing.JFrame
         jSeparator1.setVisible(false);
         jScrollPaneResultados.setVisible(false);
         jImagem.setVisible(false);
+        jBtEnviar.setEnabled(false);
         con = sql.connect("postgres", "123");
 
     }
@@ -71,6 +72,8 @@ public class gui extends javax.swing.JFrame
         jTxtCampoBusca = new javax.swing.JTextArea();
         jScrollPaneResultados = new javax.swing.JScrollPane();
         jImagem = new javax.swing.JLabel();
+        jBtEnviar = new javax.swing.JButton();
+        jStatus = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -99,6 +102,17 @@ public class gui extends javax.swing.JFrame
         jTxtCampoBusca.setText("SELECT * FROM mirflickr WHERE id < 10;");
         jScrollPane1.setViewportView(jTxtCampoBusca);
 
+        jBtEnviar.setText("Enviar");
+        jBtEnviar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                jBtEnviarActionPerformed(evt);
+            }
+        });
+
+        jStatus.setText("Status");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -106,20 +120,28 @@ public class gui extends javax.swing.JFrame
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator1)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jBtUpload, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabelImgConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSeparator1)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jBtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)))
-                    .addComponent(jScrollPaneResultados))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jImagem)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jBtUpload, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabelImgConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(jBtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jBtEnviar)
+                                        .addGap(3, 3, 3))))
+                            .addComponent(jScrollPaneResultados))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jImagem))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jStatus)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -128,12 +150,15 @@ public class gui extends javax.swing.JFrame
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabelImgConsulta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jBtUpload)
-                    .addComponent(jBtBuscar))
-                .addGap(18, 18, 18)
+                    .addComponent(jBtBuscar)
+                    .addComponent(jBtEnviar))
+                .addGap(1, 1, 1)
+                .addComponent(jStatus)
+                .addGap(2, 2, 2)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPaneResultados, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -176,7 +201,7 @@ public class gui extends javax.swing.JFrame
             }
             if (i == 0)
             {
-                System.err.println("[ERRO]\tNenhum resultado encontrado.");
+                jStatus.setText("[ERRO]\tNenhum resultado encontrado.");
                 rs.close();
             }
             for (i = 1; i <= colunas; i++)
@@ -192,8 +217,8 @@ public class gui extends javax.swing.JFrame
                     row.addElement(rs.getObject(i));
                 }
                 data.addElement(row);
-                
-                imgData = rs.getBytes("complex_data");
+
+                imgData = rs.getBytes("complex_data"); //cria lista de imagens na ordem que foram adicionadas à tabela
                 Image img = Toolkit.getDefaultToolkit().createImage(imgData);
                 ImageIcon icon = new ImageIcon(img);
                 images.add(icon);
@@ -253,18 +278,37 @@ public class gui extends javax.swing.JFrame
                 ImageIcon thumbnailIcon = new ImageIcon(getScaledImage(icon.getImage(), 120, 120));
                 jLabelImgConsulta.setIcon(thumbnailIcon);
 
-                String commandImportImg = "SELECT image_import('" + path + "');";
-
-                jTxtCampoBusca.setText(commandImportImg);
+                jTxtCampoBusca.setText(path);
+                jBtEnviar.setEnabled(true);
             } catch (Exception ex)
             {
-                System.err.println("[ERRO]\tProblema ao acessar o arquivo " + file.getAbsolutePath());
+                jStatus.setText("[ERRO]\\tProblema ao acessar o arquivo " + file.getAbsolutePath());
             }
         } else
         {
-            System.err.println("[DEBUG]\tAcesso ao arquivo cancelado pelo usuário.");
+            jStatus.setText("[DEBUG]\tAcesso ao arquivo cancelado pelo usuário.");
         }
     }//GEN-LAST:event_jBtUploadActionPerformed
+    
+    private void jBtEnviarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jBtEnviarActionPerformed
+    {//GEN-HEADEREND:event_jBtEnviarActionPerformed
+        String path = jTxtCampoBusca.getText();
+        jTxtCampoBusca.setText("");
+        
+        try
+        {
+            Statement stmt = con.createStatement();
+            PreparedStatement ps = con.prepareStatement("INSERT INTO mirflickr(id, filename, complex_data) VALUES(?,'" + path + "',SELECT image_import('" + path + "'));");
+            ps.setInt(1,30000);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(gui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        jBtEnviar.setEnabled(false);
+    }//GEN-LAST:event_jBtEnviarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -315,12 +359,14 @@ public class gui extends javax.swing.JFrame
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBtBuscar;
+    private javax.swing.JButton jBtEnviar;
     private javax.swing.JButton jBtUpload;
     private javax.swing.JLabel jImagem;
     private javax.swing.JLabel jLabelImgConsulta;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPaneResultados;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel jStatus;
     private javax.swing.JTextArea jTxtCampoBusca;
     // End of variables declaration//GEN-END:variables
 }
