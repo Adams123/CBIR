@@ -1,0 +1,120 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage{indentfirst}
+\usepackage{amsthm,amsfonts,amsmath,amssymb}
+\usepackage[brazilian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+\usepackage[usenames,dvipsnames]{xcolor} 
+\usepackage{pgf,tikz}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{changepage}
+\usepackage{geometry}
+\usepackage[pdftex]{hyperref}
+\usepackage{listings}
+\usepackage[normalem]{ulem}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{multirow,array,varwidth}
+\usepackage{tabularx}
+\usepackage{makeidx}
+\usepackage[nottoc]{tocbibind}
+\usepackage{caption}
+\geometry{a4paper,inner=2.0cm,outer=2.0cm,top=2.0cm,bottom=2.0cm}
+
+\newcommand*\NewPage{\newpage\null\thispagestyle{empty}\newpage}
+\newcommand{\pr}{\hspace*{0.6cm}}
+\newcommand{\vesp}{\vspace*{.3cm}}
+
+\newcommand{\sen}{\mbox{\,sen}}
+\newcommand{\cotg}{\mbox{\,cotg\,}}
+\newcommand{\tg}{\mbox{\,tg\,}}
+\newcommand{\cose}{\mbox{\,cos\,}}
+\newcommand{\expo}{\mbox{\,e\,}}
+\newcommand{\logg}{\mbox{\,log}}
+\newcommand{\Sum}{\displaystyle\sum}
+\newcommand{\Prod}{\displaystyle\prod}
+\newcommand{\Int}{\displaystyle\int}
+\newcommand{\dint}{\, \mathrm{d}}
+\newcommand{\Lim}{\displaystyle \lim}
+\newcommand{\Frac}{\displaystyle\frac}
+
+\newcommand{\Nc}{N_{cont}}
+\newcommand{\Ni}{N_{int}}
+\newcommand{\Ne}{N_{estrela}}
+
+\newcommand{\Dparc}[2]{\dfrac{\partial #1}{\partial #2}}
+\newcommand{\Dparcn}[3]{\dfrac{\partial^#3 #1}{\partial^#3 #2}}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\I}{I_u}
+\newcommand{\Fi}{\varphi}
+\newcommand{\se}{\mbox{ se }}
+\newcommand{\norma}[1]{\left|\left| #1 \right|\right|}
+\newcommand{\sistema}[1]{ \left\{ #1 \right. }
+
+\newtheorem{exemplo}{\pr \sc Exemplo}[section]%[chapter]
+\newtheorem{defi}{\pr \sc Defini\c{c}\~ao}[section]%[chapter]
+\newtheorem{obs}{\pr \sc Observa\cao}[section]%[chapter]
+\newtheorem{teor}{\pr \sc Teorema}[section]%[chapter]
+\newtheorem{lema}{\pr \sc Lema}[section]%[chapter]
+\newtheorem{prop}{\pr \sc Proposi\cao}[section]%[chapter]
+\newtheorem{exercise}{\pr \sc Exerc\'\i cios}[section]%[chapter]
+\newtheorem{alg}{\pr Algoritmo}[section]%[chapter]
+
+\setlength{\columnsep}{1cm}
+
+\setlength{\columnsep}{1cm}
+\addto\captionsbrazilian{% Replace "english" with the language you use
+  \renewcommand{\contentsname}%
+    {Tabela de Conteúdo}%
+}
+%basicstyle=\footnotesize\ttfamily,
+
+\begin{document}
+
+\thispagestyle{empty}
+\begin{center}
+	UNIVERSIDADE DE SÃO PAULO – USP
+	
+	INSTITUTO DE CIÊNCIAS MATEMÁTICAS E DE COMPUTAÇÃO
+	
+	DEPARTAMENTO DE SISTEMAS DE COMPUTAÇÃO
+	
+	\vspace{7cm}
+	
+	\Large{\textbf{RELATÓRIO}}
+	 
+	\Large{\textbf{Trabalho 1: CBIR}}\\
+	\small{\textbf{Grupo 1}}
+	
+	\vspace{6cm}
+	
+	Adams Vietro Codignotto da Silva - $6791943$ \\ 
+	Priscila de Oliveira -$8531810$\\
+	
+	
+	\vspace{6cm}
+	
+	São Carlos
+	
+	2016
+\end{center}
+
+\NewPage
+\pagenumbering{arabic}
+
+\tableofcontents
+
+\newpage
+\section{Introdução}
+\section{Experimentos e Resultados}
+\section{Conclusões}
+\section{Implementação da Interface}
+\end{document}
