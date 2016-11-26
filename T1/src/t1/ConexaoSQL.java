@@ -18,7 +18,7 @@ import java.sql.Statement;
 public class ConexaoSQL {
     Connection connection = null;
     
-    public void connect(String username, String pass)
+    public Connection connect(String username, String pass)
     {
         try
         {
@@ -29,7 +29,7 @@ public class ConexaoSQL {
 
             System.err.println("[ERRO]\tDriver não encontrado.");
             e.printStackTrace();
-            return;
+            return null;
         }
         //Connection connection = null;
         try
@@ -44,17 +44,19 @@ public class ConexaoSQL {
 
             System.err.println("[ERRO]\tFalha na conexão!");
             e.printStackTrace();
-            return;
+            return null;
 
         }
 
         if (connection != null)
         {
             System.out.println("[INFO]\tConexão com a Base de Dados EFETUADA com sucesso.");
+            return connection;
         } else
         {
             System.err.println("[ERRO]\tFalha ao estabelecer conexão!");
         }
+        return null;
     }
     
     public void disconnect() {
