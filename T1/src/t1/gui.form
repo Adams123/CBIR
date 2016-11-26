@@ -47,8 +47,12 @@
                   <Component id="jScrollPaneResultados" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jCombo" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jOK" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jCombo" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jOK" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jTxtID" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
@@ -90,7 +94,10 @@
               </Group>
               <Component id="jCombo" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jOK" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jOK" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jTxtID" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -175,6 +182,11 @@
     <Component class="javax.swing.JLabel" name="jStatus">
       <Properties>
         <Property name="text" type="java.lang.String" value="Status: conectado"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="jTxtID">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Id para comparar"/>
       </Properties>
     </Component>
   </SubComponents>

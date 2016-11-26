@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,10 +40,11 @@ import javax.swing.table.DefaultTableModel;
  */
 public class gui extends javax.swing.JFrame
 {
-    
+
     private final ConexaoSQL sql = new ConexaoSQL();
     public Connection con;
     private JTable tabela;
+
     /**
      * Creates new form gui
      */
@@ -57,13 +59,13 @@ public class gui extends javax.swing.JFrame
         jOK.setVisible(false);
         jTxtCampoBusca.setLineWrap(true);
         jTxtCampoBusca.setWrapStyleWord(true);
+        jTxtID.setVisible(false);
         con = sql.connect("postgres", "123");
-        
+
         //generateTestsStr();//Debug
-        
+
     }
-    
-    
+
     private void exportTable(JTable table)
     {
         JFileChooser fileChooser = new JFileChooser();
@@ -108,12 +110,72 @@ public class gui extends javax.swing.JFrame
         jTxtCampoBusca.setLineWrap(true);
         jTxtCampoBusca.setWrapStyleWord(true);
         con = sql.connect("postgres", "123");
-       
-        
-        //generateTestsStr();//Debug
 
+        //generateTestsStr();//Debug
     }
-    
+
+    private void generateTestsStr()
+    {
+        String command = null;
+
+        //CS_EU
+        ArrayList<String> desc = new ArrayList<>();
+        desc.add("CS_EU");
+        desc.add("CS_CB");
+
+        desc.add("CL_EU");
+        desc.add("CL_CB");
+
+        desc.add("SC_EU");
+        desc.add("SC_CB");
+
+        desc.add("CT_EU");
+        desc.add("CT_CB");
+
+        desc.add("ZK_EU");
+        desc.add("ZK_CB");
+
+        //kNN
+        String idVal = "1";
+        for (String d : desc)
+        {
+            command = "SELECT id, dist('mirflickr', 'complex_data', '" + d + "', complex_data_id, "
+                    + "("
+                    + "SELECT fem_extraction('mirflickr', 'complex_data', '" + d + "',"
+                    + "("
+                    + "SELECT complex_data "
+                    + "FROM mirflickr "
+                    + "WHERE id = " + idVal
+                    + "))"
+                    + ")) AS distancia "
+                    + "FROM mirflickr "
+                    + "ORDER BY distancia "
+                    + "LIMIT 10;";
+            System.out.println(command);
+        }
+
+        //Range
+        idVal = "1";
+        for (String d : desc)
+        {
+            command = "SELECT id, distancia "
+                    + "FROM ( "
+                    + "SELECT id, dist('mirflickr', 'complex_data', '" + d + "', complex_data_id, "
+                    + "("
+                    + "SELECT fem_extraction('mirflickr', 'complex_data', '" + d + "',"
+                    + "("
+                    + "SELECT complex_data "
+                    + "FROM mirflickr "
+                    + "WHERE id = " + idVal
+                    + "))"
+                    + ")) AS distancia "
+                    + "FROM mirflickr"
+                    + ") AS Range "
+                    + "WHERE distancia <= 1;";
+            System.out.println(command);
+        }
+    }
+
     private void showResult(Vector data, Vector columnNames, Vector images)
     {
         DefaultTableModel d = new DefaultTableModel(data, columnNames);
@@ -129,7 +191,6 @@ public class gui extends javax.swing.JFrame
                 int id = Integer.parseInt(table.getModel().getValueAt(row, 0).toString());
                 ImageIcon icon = (ImageIcon) images.elementAt(row);
                 ImageIcon thumbnailIcon = new ImageIcon(getScaledImage(icon.getImage(), 320, 320));
-                //jImagem.setIcon((Icon) images.elementAt(row));
                 jImagem.setIcon(thumbnailIcon);
             }
         });
@@ -157,6 +218,7 @@ public class gui extends javax.swing.JFrame
         jOK = new javax.swing.JButton();
         jImagem = new javax.swing.JLabel();
         jStatus = new javax.swing.JLabel();
+        jTxtID = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -205,6 +267,8 @@ public class gui extends javax.swing.JFrame
 
         jStatus.setText("Status: conectado");
 
+        jTxtID.setText("Id para comparar");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -230,7 +294,10 @@ public class gui extends javax.swing.JFrame
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jOK))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jOK)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTxtID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jImagem)
@@ -262,7 +329,9 @@ public class gui extends javax.swing.JFrame
                         .addGap(57, 57, 57)))
                 .addComponent(jCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jOK)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jOK)
+                    .addComponent(jTxtID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -271,32 +340,56 @@ public class gui extends javax.swing.JFrame
 
     private void jBtBuscarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jBtBuscarActionPerformed
     {//GEN-HEADEREND:event_jBtBuscarActionPerformed
-         if (jTxtCampoBusca.getText().equals("debug"))
+        if (jTxtCampoBusca.getText().equals("debug"))
         {
             jCombo.setVisible(true);
             jOK.setVisible(true);
-
+            jTxtID.setVisible(true);
+//----------------KNN
 //----------------COLOR LAYOUT
-            jCombo.addItem("Color Layout + Euclidean");
+            jCombo.addItem("knn Color Layout + Euclidean");
 
-            jCombo.addItem("Color Layout + Manhattan");
+            jCombo.addItem("knn Color Layout + Manhattan");
 
 //----------------SCALABLE COLOR
-            jCombo.addItem("Scalable Color + Euclidean");
+            jCombo.addItem("knn Scalable Color + Euclidean");
 
-            jCombo.addItem("Scalable Color + Manhattan");
+            jCombo.addItem("knn Scalable Color + Manhattan");
 //----------------COLOR STRUCTURE
-            jCombo.addItem("Color Structure + Euclidean");
+            jCombo.addItem("knn Color Structure + Euclidean");
 
-            jCombo.addItem("Color Structure + Manhattan");
+            jCombo.addItem("knn Color Structure + Manhattan");
 //----------------COLOR TEMPERATURE
-            jCombo.addItem("Color Temperature + Euclidean");
+            jCombo.addItem("knn Color Temperature + Euclidean");
 
-            jCombo.addItem("Color Temperature + Manhattan");
+            jCombo.addItem("knn Color Temperature + Manhattan");
 //----------------ZERNIKE
-            jCombo.addItem("Zernike + Euclidean");
+            jCombo.addItem("knn Zernike + Euclidean");
 
-            jCombo.addItem("Zernike + Manhattan");
+            jCombo.addItem("knn Zernike + Manhattan");
+
+//----------------range
+//----------------COLOR LAYOUT
+            jCombo.addItem("range Color Layout + Euclidean");
+
+            jCombo.addItem("range Color Layout + Manhattan");
+
+//----------------SCALABLE COLOR
+            jCombo.addItem("range Scalable Color + Euclidean");
+
+            jCombo.addItem("range Scalable Color + Manhattan");
+//----------------COLOR STRUCTURE
+            jCombo.addItem("range Color Structure + Euclidean");
+
+            jCombo.addItem("range Color Structure + Manhattan");
+//----------------COLOR TEMPERATURE
+            jCombo.addItem("range Color Temperature + Euclidean");
+
+            jCombo.addItem("range Color Temperature + Manhattan");
+//----------------ZERNIKE
+            jCombo.addItem("range Zernike + Euclidean");
+
+            jCombo.addItem("range Zernike + Manhattan");
             this.setSize(950, 600);
             return;
         }
@@ -323,7 +416,7 @@ public class gui extends javax.swing.JFrame
             rs = stmt.executeQuery(command);
             ResultSetMetaData metadados = rs.getMetaData();
             colunas = metadados.getColumnCount();
-            
+
             while (rs.next())
             { //verifica se algum resultado retornou nulo
                 i++;
@@ -357,17 +450,18 @@ public class gui extends javax.swing.JFrame
         }
         showResult(data, columnNames, images);
     }//GEN-LAST:event_jBtBuscarActionPerformed
-    
-    private Image getScaledImage(Image srcImg, int w, int h){
+
+    private Image getScaledImage(Image srcImg, int w, int h)
+    {
         BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2 = resizedImg.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.drawImage(srcImg, 0, 0, w, h, null);
         g2.dispose();
-        
+
         return resizedImg;
     }
-    
+
     private void jBtUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtUploadActionPerformed
         JFileChooser fileChooser = new JFileChooser();
         int returnVal = fileChooser.showOpenDialog(this);
@@ -407,49 +501,105 @@ public class gui extends javax.swing.JFrame
 
     private void jOKActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jOKActionPerformed
     {//GEN-HEADEREND:event_jOKActionPerformed
+        
+        int id = Integer.parseInt(jTxtID.getText());
+        try
+        {
+            Image image = getImageFromID(id);
+            ImageIcon thumbnailIcon = new ImageIcon(getScaledImage(image, 120, 120));
+            jLabelImgConsulta.setIcon(thumbnailIcon);
+            
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(gui.class.getName()).log(Level.SEVERE, null, ex);
+        }
         switch (jCombo.getSelectedIndex())
         {
-            //--------------COLOR LAYOUT
+//--------------knn
+//--------------COLOR LAYOUT
 
             case 0:
-                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CL_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CL_EU',(SELECT complex_data FROM mirflickr WHERE id = 1)))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CS_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CS_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id +")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
                 break;
 
             case 1:
-                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CL_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CL_CB',(SELECT complex_data FROM mirflickr WHERE id = 1)))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CS_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CS_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
                 break;
 
 //----------------SCALABLE COLOR
             case 2:
-                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'SC_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'SC_EU',(SELECT complex_data FROM mirflickr WHERE id = 1)))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CL_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CL_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
                 break;
 
             case 3:
-                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'SC_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'SC_CB',(SELECT complex_data FROM mirflickr WHERE id = 1)))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CL_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CL_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
                 break;
 //----------------COLOR STRUCTURE
             case 4:
-                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CS_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CS_EU',(SELECT complex_data FROM mirflickr WHERE id = 1)))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'SC_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'SC_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
                 break;
 
             case 5:
-                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CS_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CS_CB',(SELECT complex_data FROM mirflickr WHERE id = 1)))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'SC_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'SC_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
                 break;
 //----------------COLOR TEMPERATURE
             case 6:
-                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CT_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CT_EU',(SELECT complex_data FROM mirflickr WHERE id = 1)))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CT_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CT_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
                 break;
 
             case 7:
-                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CT_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CT_CB',(SELECT complex_data FROM mirflickr WHERE id = 1)))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CT_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CT_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
                 break;
 //----------------ZERNIKE
             case 8:
-                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'ZK_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'ZK_EU',(SELECT complex_data FROM mirflickr WHERE id = 1)))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'ZK_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'ZK_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
                 break;
 
             case 9:
-                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'ZK_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'ZK_CB',(SELECT complex_data FROM mirflickr WHERE id = 1)))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'ZK_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'ZK_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                break;
+
+//--------------range
+//--------------COLOR LAYOUT                
+            case 10:
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CS_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CS_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                break;
+
+            case 11:
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CS_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CS_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                break;
+
+//----------------SCALABLE COLOR
+            case 12:
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CL_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CL_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                break;
+
+            case 13:
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CL_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CL_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                break;
+//----------------COLOR STRUCTURE
+            case 14:
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'SC_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'SC_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                break;
+
+            case 15:
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'SC_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'SC_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                break;
+//----------------COLOR TEMPERATURE
+            case 16:
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CT_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CT_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                break;
+
+            case 17:
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CT_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CT_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                break;
+//----------------ZERNIKE
+            case 18:
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'ZK_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'ZK_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                break;
+
+            case 19:
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'ZK_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'ZK_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
                 break;
         }
     }//GEN-LAST:event_jOKActionPerformed
@@ -509,16 +659,16 @@ public class gui extends javax.swing.JFrame
         rs = stmt.executeQuery("SELECT COMPLEX_DATA FROM MIRFLICKR WHERE ID=" + id + ";");
         byte[] imgData = null;
         Image img = null;
-        while(rs.next())
+        while (rs.next())
         {
             imgData = rs.getBytes(1); //cria lista de imagens na ordem que foram adicionadas à tabela
             img = Toolkit.getDefaultToolkit().createImage(imgData);
         }
-        
+
         return img;
-        
+
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBtBuscar;
     private javax.swing.JButton jBtUpload;
@@ -532,5 +682,6 @@ public class gui extends javax.swing.JFrame
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel jStatus;
     private javax.swing.JTextArea jTxtCampoBusca;
+    private javax.swing.JTextField jTxtID;
     // End of variables declaration//GEN-END:variables
 }
