@@ -61,6 +61,7 @@ public class gui extends javax.swing.JFrame
         jTxtCampoBusca.setWrapStyleWord(true);
         jTxtID.setVisible(false);
         con = sql.connect("postgres", "123");
+        
 
         //generateTestsStr();//Debug
 
@@ -99,7 +100,7 @@ public class gui extends javax.swing.JFrame
             }
             doc.add(pdfTable);
             doc.close();
-            System.out.println("done");
+            System.out.println("[INFO]\tTabela exportada.");
         } catch (DocumentException ex)
         {
             Logger.getLogger(T1.class.getName()).log(Level.SEVERE, null, ex);
@@ -107,9 +108,9 @@ public class gui extends javax.swing.JFrame
         {
             Logger.getLogger(T1.class.getName()).log(Level.SEVERE, null, ex);
         }
-        jTxtCampoBusca.setLineWrap(true);
-        jTxtCampoBusca.setWrapStyleWord(true);
-        con = sql.connect("postgres", "123");
+        //jTxtCampoBusca.setLineWrap(true);
+        //jTxtCampoBusca.setWrapStyleWord(true);
+        //con = sql.connect("postgres", "123");
 
         //generateTestsStr();//Debug
     }
@@ -423,8 +424,8 @@ public class gui extends javax.swing.JFrame
             }
             if (i == 0)
             {
-                jStatus.setText("[ERRO]\tNenhum resultado encontrado.");
-                rs.close();
+                jStatus.setText("[INFO]\tNenhum resultado encontrado.");
+                //rs.close();
             }
             for (i = 1; i <= colunas; i++)
             {
@@ -505,8 +506,10 @@ public class gui extends javax.swing.JFrame
         int id = Integer.parseInt(jTxtID.getText());
         try
         {
-            Image image = getImageFromID(id);
-            ImageIcon thumbnailIcon = new ImageIcon(getScaledImage(image, 120, 120));
+            //Image image = getImageFromID(id);
+            
+            ImageIcon image = new ImageIcon(getFilenameFromID(id));
+            ImageIcon thumbnailIcon = new ImageIcon(getScaledImage(image.getImage(), 120, 120));
             jLabelImgConsulta.setIcon(thumbnailIcon);
             
         } catch (SQLException ex)
@@ -651,6 +654,23 @@ public class gui extends javax.swing.JFrame
         });
     }
 
+    private String getFilenameFromID(int id) throws SQLException
+    {
+        Statement stmt;
+        ResultSet rs = null;
+        stmt = con.createStatement();
+        rs = stmt.executeQuery("SELECT filename FROM MIRFLICKR WHERE ID=" + id + ";");
+        String filename = null;
+        
+        while (rs.next())
+        {
+            filename = rs.getString("filename"); //cria lista de imagens na ordem que foram adicionadas à tabela
+        }
+
+        return filename;
+
+    }
+    
     private Image getImageFromID(int id) throws SQLException
     {
         Statement stmt;
