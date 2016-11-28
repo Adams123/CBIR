@@ -61,8 +61,8 @@ public class gui extends javax.swing.JFrame
         jTxtCampoBusca.setLineWrap(true);
         jTxtCampoBusca.setWrapStyleWord(true);
         jTxtID.setVisible(false);
-        //con = sql.connect("postgres", "123");
-        con = sql.connect("postgres", "LolD0ta");
+        con = sql.connect("postgres", "123");
+        
         
        
 
