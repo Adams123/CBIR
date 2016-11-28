@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -60,13 +61,17 @@ public class gui extends javax.swing.JFrame
         jTxtCampoBusca.setLineWrap(true);
         jTxtCampoBusca.setWrapStyleWord(true);
         jTxtID.setVisible(false);
-        con = sql.connect("postgres", "123");
+        //con = sql.connect("postgres", "123");
+        con = sql.connect("postgres", "LolD0ta");
         
+       
 
         //generateTestsStr();//Debug
 
     }
 
+    
+    
     private void exportTable(JTable table)
     {
         JFileChooser fileChooser = new JFileChooser();
@@ -90,7 +95,7 @@ public class gui extends javax.swing.JFrame
                 pdfTable.addCell(table.getColumnName(i));
             }
             //extracting data from the JTable and inserting it to PdfPTable
-            for (int rows = 0; rows < table.getRowCount() - 1; rows++)
+            for (int rows = 0; rows < table.getRowCount(); rows++)
             {
                 for (int cols = 0; cols < table.getColumnCount(); cols++)
                 {
@@ -204,8 +209,7 @@ public class gui extends javax.swing.JFrame
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
         jBtBuscar = new javax.swing.JButton();
         jBtUpload = new javax.swing.JButton();
@@ -224,19 +228,15 @@ public class gui extends javax.swing.JFrame
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jBtBuscar.setText("Buscar");
-        jBtBuscar.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jBtBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBtBuscarActionPerformed(evt);
             }
         });
 
         jBtUpload.setText("Upload ");
-        jBtUpload.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jBtUpload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBtUploadActionPerformed(evt);
             }
         });
@@ -249,22 +249,20 @@ public class gui extends javax.swing.JFrame
         jScrollPane1.setViewportView(jTxtCampoBusca);
 
         jButton1.setText("Exportar");
-        jButton1.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
         jOK.setText("OK");
-        jOK.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jOK.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jOKActionPerformed(evt);
             }
         });
+
+        jImagem.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jStatus.setText("Status: conectado");
 
@@ -290,29 +288,29 @@ public class gui extends javax.swing.JFrame
                                 .addComponent(jButton1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jBtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)))
-                    .addComponent(jScrollPaneResultados)
+                            .addComponent(jScrollPane1)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPaneResultados, javax.swing.GroupLayout.PREFERRED_SIZE, 619, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jOK)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTxtID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jImagem)
-                .addContainerGap())
+                .addGap(18, 18, 18)
+                .addComponent(jImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabelImgConsulta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jBtUpload)
@@ -322,12 +320,9 @@ public class gui extends javax.swing.JFrame
                         .addGap(18, 18, 18)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPaneResultados, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jImagem)
-                        .addGap(57, 57, 57)))
+                        .addComponent(jScrollPaneResultados, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(jCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -391,7 +386,8 @@ public class gui extends javax.swing.JFrame
             jCombo.addItem("range Zernike + Euclidean");
 
             jCombo.addItem("range Zernike + Manhattan");
-            this.setSize(950, 600);
+            this.setSize(990, 600);
+            //this.setSize(950, 340);
             return;
         }
 
@@ -399,8 +395,11 @@ public class gui extends javax.swing.JFrame
         jScrollPaneResultados.setVisible(true);
         jImagem.setVisible(true);
         jImagem.setSize(320, 320);
-        jImagem.repaint();
-        this.setSize(950, 340);
+        
+        
+        //this.setSize(950, 340);
+        this.setSize(990, 600);
+        this.repaint();
         int i = 0;
         int colunas;
         String command;
@@ -424,9 +423,12 @@ public class gui extends javax.swing.JFrame
             }
             if (i == 0)
             {
-                jStatus.setText("[INFO]\tNenhum resultado encontrado.");
+                jStatus.setText("[INFO]\t Nenhum resultado encontrado.");
                 //rs.close();
+            }else{
+                jStatus.setText("[INFO]\t " + i + " resultado(s) encontrado(s).");
             }
+            
             for (i = 1; i <= colunas; i++)
             {
                 columnNames.addElement(metadados.getColumnName(i)); //adiciona os nomes das colunas ao vetor de nomes
@@ -522,28 +524,28 @@ public class gui extends javax.swing.JFrame
 //--------------COLOR LAYOUT
 
             case 0:
-                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CS_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CS_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id +")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CL_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CL_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id +")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
                 break;
 
             case 1:
-                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CS_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CS_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CL_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CL_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
                 break;
 
 //----------------SCALABLE COLOR
             case 2:
-                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CL_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CL_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
-                break;
-
-            case 3:
-                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CL_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CL_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
-                break;
-//----------------COLOR STRUCTURE
-            case 4:
                 jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'SC_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'SC_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
                 break;
 
-            case 5:
+            case 3:
                 jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'SC_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'SC_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                break;
+//----------------COLOR STRUCTURE
+            case 4:
+                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CS_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CS_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
+                break;
+
+            case 5:
+                jTxtCampoBusca.setText("SELECT id, dist('mirflickr', 'complex_data', 'CS_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CS_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr ORDER BY distancia LIMIT 10;");
                 break;
 //----------------COLOR TEMPERATURE
             case 6:
@@ -565,44 +567,44 @@ public class gui extends javax.swing.JFrame
 //--------------range
 //--------------COLOR LAYOUT                
             case 10:
-                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CS_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CS_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CL_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CL_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1 ORDER BY distancia;");
                 break;
 
             case 11:
-                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CS_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CS_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CL_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CL_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1 ORDER BY distancia;");
                 break;
 
 //----------------SCALABLE COLOR
             case 12:
-                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CL_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CL_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'SC_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'SC_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1 ORDER BY distancia;");
                 break;
 
             case 13:
-                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CL_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CL_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'SC_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'SC_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1 ORDER BY distancia;");
                 break;
 //----------------COLOR STRUCTURE
             case 14:
-                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'SC_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'SC_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CS_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CS_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1 ORDER BY distancia;");
                 break;
 
             case 15:
-                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'SC_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'SC_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CS_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CS_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1 ORDER BY distancia;");
                 break;
 //----------------COLOR TEMPERATURE
             case 16:
-                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CT_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CT_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CT_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CT_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1 ORDER BY distancia;");
                 break;
 
             case 17:
-                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CT_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CT_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'CT_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'CT_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1 ORDER BY distancia;");
                 break;
 //----------------ZERNIKE
             case 18:
-                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'ZK_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'ZK_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'ZK_EU', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'ZK_EU',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1 ORDER BY distancia;");
                 break;
 
             case 19:
-                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'ZK_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'ZK_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1;");
+                jTxtCampoBusca.setText("SELECT id, distancia FROM ( SELECT id, dist('mirflickr', 'complex_data', 'ZK_CB', complex_data_id, (SELECT fem_extraction('mirflickr', 'complex_data', 'ZK_CB',(SELECT complex_data FROM mirflickr WHERE id = " + id + ")))) AS distancia FROM mirflickr) AS Range WHERE distancia <= 1 ORDER BY distancia;");
                 break;
         }
     }//GEN-LAST:event_jOKActionPerformed
